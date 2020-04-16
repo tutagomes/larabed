@@ -1,0 +1,33 @@
+FROM php:7.2-apache-stretch
+
+WORKDIR /var/www/html
+LABEL company="tutagomes"
+
+LABEL version="0.0.1"
+
+# Configuring Database Drivers
+RUN apt-get update
+RUN apt-get install libgmp-dev -y
+RUN docker-php-ext-configure gmp 
+RUN docker-php-ext-install gmp
+RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install pdo_mysql
+
+# Installing Image-Optimizer tools - spatie/image-optimizer
+RUN apt-get -y install jpegoptim
+RUN apt-get -y install optipng
+RUN apt-get -y install pngquant
+RUN apt-get -y install gifsicle
+RUN apt-get -y install webp
+
+# change uid and gid of apache to docker user uid/gid
+RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
+
+# change the web_root to laravel /var/www/html/public folder
+RUN sed -i -e "s/html/html\/public/g" /etc/apache2/sites-enabled/000-default.conf
+
+# enable apache module rewrite
+RUN a2enmod rewrite
+
+# change ownership of our applications
+RUN chown -R www-data:www-data /var/www/html
