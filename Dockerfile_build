@@ -23,4 +23,5 @@ RUN npm i -g newman
 
 # making composer executable
 RUN mv composer.phar /usr/local/bin/composer
+RUN apt-get -y install unzip
 RUN composer global require laravel/envoy
