@@ -1,0 +1,30 @@
+FROM php:8
+
+WORKDIR /var/www/html
+LABEL company="tutagomes"
+
+LABEL version="0.0.1"
+
+# Atualizando pacotes
+RUN apt-get update && apt-get upgrade -y
+
+# Instalando dependencia para banco de dados e demais bibliotecas Laravel
+RUN apt-get install -y mariadb-client zlib1g-dev libpng-dev
+
+# Instalando dependencias de banco de dados
+RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-install gd        
+
+# Instalando Commpose
+RUN curl -sS https://getcomposer.org/installer -o composer-setup.php
+RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+
+# Alterando permissões de arquvio
+RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
+
+# change the web_root to laravel /var/www/html/public folder
+RUN sed -i -e "s/html/html\/public/g" /etc/apache2/sites-enabled/000-default.conf
+
+# enable apache module rewrite
+RUN a2enmod rewrite
