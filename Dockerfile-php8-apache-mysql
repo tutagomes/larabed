@@ -17,9 +17,12 @@ RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install gd        
 
 # Instalando Commpose
+WORKDIR /tmp
 RUN curl -sS https://getcomposer.org/installer -o composer-setup.php
 RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+RUN rm composer-setup.php
 
+WORKDIR /var/www/html
 # Alterando permissões de arquvio
 RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
 
