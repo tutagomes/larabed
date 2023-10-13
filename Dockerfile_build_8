@@ -1,0 +1,27 @@
+FROM php:8
+
+RUN apt-get update -yqq
+RUN apt-get install gnupg apt-utils -yqq
+RUN apt-get install git libzip-dev libcurl4-gnutls-dev libonig-dev libicu-dev libmcrypt-dev libvpx-dev libjpeg-dev libpng-dev libxpm-dev zlib1g-dev libfreetype6-dev libxml2-dev libexpat1-dev libbz2-dev libgmp3-dev libldap2-dev unixodbc-dev libpq-dev libsqlite3-dev libaspell-dev libsnmp-dev libpcre3-dev libtidy-dev -yqq
+RUN docker-php-ext-install mbstring pdo_mysql curl json intl gd xml zip bz2 opcache
+  # Install & enable Xdebug for code coverage reports
+RUN pecl install xdebug
+RUN docker-php-ext-enable xdebug
+  # Install Composer and project dependencies.
+RUN curl -sS https://getcomposer.org/installer | php
+RUN apt-get -y install jpegoptim
+RUN apt-get -y install optipng
+RUN apt-get -y install pngquant
+RUN apt-get -y install gifsicle
+RUN apt-get -y install webp
+
+
+# Installing NodeJS with NPM and Newman
+RUN apt-get -y install nodejs npm
+RUN npm i -g npm
+RUN npm i -g newman
+
+# making composer executable
+RUN mv composer.phar /usr/local/bin/composer
+RUN apt-get -y install unzip
+RUN composer global require laravel/envoy
