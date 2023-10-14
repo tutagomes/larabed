@@ -7,7 +7,6 @@ RUN apt-get install git libzip-dev libcurl4-gnutls-dev libonig-dev libicu-dev li
 RUN docker-php-ext-install mbstring
 RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install curl
-# RUN docker-php-ext-install json
 RUN docker-php-ext-install intl
 RUN docker-php-ext-install gd
 RUN docker-php-ext-install xml
@@ -15,10 +14,10 @@ RUN docker-php-ext-install zip
 RUN docker-php-ext-install bz2
 RUN docker-php-ext-install opcache
 
-  # Install & enable Xdebug for code coverage reports
+# Install & enable Xdebug for code coverage reports
 RUN pecl install xdebug
 RUN docker-php-ext-enable xdebug
-  # Install Composer and project dependencies.
+# Install Composer and project dependencies.
 RUN curl -sS https://getcomposer.org/installer | php
 RUN apt-get -y install jpegoptim
 RUN apt-get -y install optipng
@@ -29,10 +28,13 @@ RUN apt-get -y install webp
 
 # Installing NodeJS with NPM and Newman
 RUN apt-get -y install nodejs npm
-RUN npm i -g npm
 RUN npm i -g newman
 
 # making composer executable
 RUN mv composer.phar /usr/local/bin/composer
 RUN apt-get -y install unzip
 RUN composer global require laravel/envoy
+
+RUN apt-get update && apt-get install -y libmagickwand-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN printf "\n" | pecl install imagick
+RUN docker-php-ext-enable imagick
